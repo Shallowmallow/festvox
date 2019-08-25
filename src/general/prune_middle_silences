@@ -55,7 +55,13 @@ fi
 #mkdir wav
 
 # Not yet tested if this is worthwhile to customize to the particular voice
-PDAPARAMS='-fmin 70 -fmax 240'
+#PDAPARAMS='-fmin 70 -fmax 240'
+F0MIN=70
+F0MAX=240
+if [ -f etc/f0.params ]
+then
+   . etc/f0.params
+fi
 
 if [ -d ssil ]
 then
@@ -76,7 +82,7 @@ while read fname
 do
     echo $fname
 
-    $ESTDIR/bin/pda -L $PDAPARAMS -otype est_ascii wav/$fname.wav |
+    $ESTDIR/bin/pda -L -fmin $F0MIN -fmax $F0MAX -otype est_ascii wav/$fname.wav |
     awk 'BEGIN {id="'$fname'"; start=0.0; printf("0.0 ");}
          {if ($1 == "EST_Header_End")
             ofinterest=1;
